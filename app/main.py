@@ -1,21 +1,22 @@
 from abc import ABC
+from typing import Any, Type
 
 
 class IntegerRange:
     def __init__(self, min_amount: int, max_amount: int) -> None:
         self.min_amount = min_amount
         self.max_amount = max_amount
-        self.protected_name = ""
+        self.protected_name: str = ""
 
-    def __set_name__(self, owner, name: str) -> None:
+    def __set_name__(self, owner: Type[Any], name: str) -> None:
         self.protected_name = f"_{name}"
 
-    def __get__(self, instance, owner):
+    def __get__(self, instance: Any, owner: Type[Any]) -> int:
         if instance is None:
-            return self
+            return self  # type: ignore[return-value]
         return getattr(instance, self.protected_name)
 
-    def __set__(self, instance, value) -> None:
+    def __set__(self, instance: Any, value: int) -> None:
         if not isinstance(value, int):
             raise TypeError
         if value < self.min_amount or value > self.max_amount:
@@ -55,7 +56,7 @@ class AdultSlideLimitationValidator(SlideLimitationValidator):
 
 
 class Slide:
-    def __init__(self, name: str, limitation_class: type) -> None:
+    def __init__(self, name: str, limitation_class: Type[SlideLimitationValidator]) -> None:
         self.name = name
         self.limitation_class = limitation_class
 
